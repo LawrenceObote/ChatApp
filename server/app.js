@@ -1,20 +1,15 @@
 const express = require("express");
-const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { Sequelize, DataTypes } = require("sequelize");
 const dotenv = require("dotenv");
-const { createRoom, createUser } = require("./controller");
-const user = require("./models/user");
+const { user } = require("./models/index");
+const port = process.env.PORT || 3000;
+const router = require("./routes/index");
 
 dotenv.config();
 const app = express();
-const httpServer = createServer(app);
-const db = require("./database");
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  define: {
-    freezeTableName: true,
-  },
-});
+const httpServer = require("http").createServer(app);
+const sequelize = require("./database");
 
 const initDatabase = async () => {
   try {
@@ -27,18 +22,19 @@ const initDatabase = async () => {
     console.error("Unable to connect to the database:", error);
   }
 };
-
-const io = new Server(httpServer, {
-  /* options */
-});
-// httpServer.use("/create_user", createUser);
-// app.post("/create_room", createRoom);
-app.post("/create_user", createUser);
-
-io.on("connection", (socket) => {});
-
-io.on("new_namespace", (namespace) => {
-  // ...
-});
 initDatabase();
-httpServer.listen(3000);
+// const io = new Server(httpServer, {
+//   /* options */
+// });
+
+app.use("/", router);
+
+// io.on("connection", (socket) => {});
+
+// io.on("new_namespace", (namespace) => {
+//   // ...
+// });
+
+httpServer.listen(port, () => {
+  console.log(`server listening on port:${port}`);
+});

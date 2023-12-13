@@ -1,6 +1,6 @@
 const sequelize = require("../database");
-const { DataTypes } = require("sequelize");
-const user = sequelize.define("user", {
+const { Sequelize, DataTypes } = require("sequelize");
+const user = sequelize.define("users", {
   uuid: {
     allowNull: false,
     primaryKey: true,
@@ -13,6 +13,7 @@ const user = sequelize.define("user", {
   },
   rooms: {
     type: DataTypes.STRING(1234),
+    defaultValue: "no rooms",
   },
 });
 
